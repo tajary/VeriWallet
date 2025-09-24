@@ -1,0 +1,12 @@
+# Generate a 2048-bit RSA private key
+openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048
+
+# Extract the public key in PEM format
+openssl rsa -pubout -in private.key -out public.key
+
+
+npm init -y
+npm install jsonwebtoken
+
+node create.js
+node generate-jwks.js 
