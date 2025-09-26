@@ -1,42 +1,87 @@
 <?php
 
-class AuthController {
-	
-	public function createNonce($wallet){
-		return [
-			"nonce" => "sampleNounceasg for $wallet is <".sha1($wallet).">. at ".date('Y-m-d H:i:s'),
-		];
+class AuthController
+{
+
+	private $db = '';
+	private $username = '';
+	private $password = '';
+
+	private function createPDO()
+	{
+		try {
+			$pdo = new PDO("mysql:host=localhost;dbname={$this->db};charset=utf8mb4", $this->username, $this->password);
+			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+			return $pdo;
+		} catch (PDOException $e) {
+			die("Connection failed: " . $e->getMessage());
+		}
 	}
-	
-	public function verifyNounce(){
+
+	private function generateFakeSignature($length = 344)
+	{
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+		$signature = '';
+
+		for ($i = 0; $i < $length; $i++) {
+			$signature .= $chars[rand(0, strlen($chars) - 1)];
+		}
+
+		if (rand(0, 1)) {
+			$signature .= (rand(0, 1) ? '==' : '=');
+		}
+
+		return $signature;
+	}
+
+	public function addCredential()
+	{
 		$input = json_decode(file_get_contents('php://input'), true);
-		return [
-			"input" => $input,
-			"token" => "salme token",
-			"hasCredential" => true,
-			"verifyingCriteria" => GlobalData::$verifyingCriteria,
-			"userVerifications" => $this->getUserVerifications(),
-		];
+		$wallet = $input['wallet'];
+		$name = $input['name'];
+		$now = date("Y-m-d H:i:s");
+		$signature = $this->generateFakeSignature();
+		$input['signedcred'] = "wallet $wallet is verified on $name on $now\n\n$signature";
+		$pdo = $this->createPDO();
+		try {
+			$sql = "INSERT INTO veriwallet (name, description, icon, signedcred, wallet) 
+                VALUES (:name, :description, :icon, :signedcred, :wallet)";
+
+			$stmt = $pdo->prepare($sql);
+
+			$stmt->bindParam(':name', $input['name']);
+			$stmt->bindParam(':description', $input['description']);
+			$stmt->bindParam(':icon', $input['icon']);
+			$stmt->bindParam(':signedcred', $input['signedcred']);
+			$stmt->bindParam(':wallet', $input['wallet']);
+
+			if ($stmt->execute()) {
+				return [
+					'status' => 'ok'
+				];
+			} else {
+				return [
+					'status' => 'nok'
+				];
+			}
+		} catch (PDOException $e) {
+			//echo "Error: " . $e->getMessage();
+			return [
+				'status' => 'nok'
+			];
+		}
 	}
-	
-	public function getPublicCredential($criteria, $address){
-		// search the database for criteria+address 
-		return[
-			"credential" => "user with wallet $address got the $criteria verification on 2025-10-10 12:11:10 -- signature",
-		];
-	}
-	
-    private function getUserVerifications(){
-		return [
-			[
-				"id" => "joined_elite_community",
-				"verification_date" => "2025-10-10 12:11:09",
-				"tx_hash" => "0x121212",
-				"is_public" => 1,
-				"public_address" => "0z273862376237c623-sdfsdhsd-sdfdsf",
-				
-				"credential" => "user with wallet 0x111 got the joined_elite_community verification on 2025-10-10 12:11:10 -- signature",
-			]
-		];
+
+	public function getCredentials($wallet)
+	{
+		$input = json_decode(file_get_contents('php://input'), true);
+		$pdo = $this->createPDO();
+		$sql = "SELECT * FROM veriwallet WHERE wallet=:wallet ORDER BY created_date DESC";
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindParam(':wallet', $wallet);
+		$stmt->execute();
+		$results = $stmt->fetchAll();
+		return $results;
 	}
 }

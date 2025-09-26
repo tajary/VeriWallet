@@ -10,7 +10,14 @@ export default defineConfig({
       },
     }),
   ],
-  server:{
+  build: {
+    rollupOptions: {
+      input: {
+        main: 'app.html' // تغییر entry point به app.html
+      }
+    }
+  },
+  server: {
     allowedHosts: ["veriwallet.com"]
   }
 })

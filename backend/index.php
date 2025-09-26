@@ -19,11 +19,9 @@ $app->get("/", function() {
 include "./controllers/AuthController.php";
 $AuthController = new AuthController();
 
-$app->post("/api/auth/nonce/{wallet}", [$AuthController, 'createNonce']);
+$app->post("/api/credential/add", [$AuthController, 'addCredential']);
 
-$app->post("/api/auth/verify", [$AuthController, 'verifyNounce']);
-$app->get("/api/wallet/{criteria}/{address}", [$AuthController, 'getPublicCredential']);
-
+$app->get("/api/credential/all/{wallet}", [$AuthController, 'getCredentials']);
 
 
 
