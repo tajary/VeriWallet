@@ -1,6 +1,7 @@
 import Header from './Header';
 import MyCredentials from './MyCredentials';
 import AvailableCredentials from './AvailableCredentials';
+import Perks from './Perks';
 import { useState } from 'react';
 
 export default function Dashboard() {
@@ -16,6 +17,7 @@ export default function Dashboard() {
       <main className="container mx-auto px-4 py-8">
         <MyCredentials updateData={updateData}/>
         <AvailableCredentials onUpdate={onUpdate} />
+        <Perks  />
       </main>
     </div>
   );

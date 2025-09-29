@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 define('SLASH_PATH', __DIR__);
 
 require_once 'lib/SimpleRouter.php';
@@ -23,7 +24,11 @@ $app->post("/api/credential/add", [$AuthController, 'addCredential']);
 
 $app->get("/api/credential/all/{wallet}", [$AuthController, 'getCredentials']);
 
-
+$app->post("/api/issue", [$AuthController, 'issue']);
+$app->post("/api/verify/{airId}/{keyId}", [$AuthController, 'setVerify']);
+$app->get("/api/verify/{wallet}/{keyId}", [$AuthController, 'getVerify']);
+$app->get("/api/issues/{airId}", [$AuthController, 'issues']);
+$app->get("/api/verifies/{airId}", [$AuthController, 'verifies']);
 
 
 

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet History Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6cf7;
+            --primary-dark: #3a5ce5;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7ff 0%, #eef1ff 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .step-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .step-description {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--secondary);
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .signature-box {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            text-align: center;
+            border: 1px dashed #ced4da;
+        }
+
+        .history-display {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f3ff 100%);
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+        }
+
+        .history-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .history-label {
+            font-size: 1.1rem;
+            color: var(--secondary);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--secondary);
+        }
+
+        .loading-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .activity-log {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-icon {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 20px;
+            }
+
+            .history-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Wallet History Verification</h1>
+                <p>Connect your wallet to verify your activity history</p>
+            </div>
+
+            <div class="card-body">
+                <!-- Step 1: Connect & Sign -->
+                <div class="step active" id="step1">
+                    <div class="step-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h2 class="step-title">Connect & Sign</h2>
+                    <p class="step-description">Connect your wallet and sign the verification message</p>
+
+                    <div class="signature-box">
+                        Verify wallet ownership for activity history check. Timestamp: <span id="timestamp"></span>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="connectAndSign()">
+                        <i class="fas fa-plug"></i> Connect Wallet & Sign
+                    </button>
+                </div>
+
+                <!-- Step 2: Analyzing History -->
+                <div class="step" id="step2">
+                    <div class="step-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h2 class="step-title">Analyzing Wallet History</h2>
+                    <p class="step-description">Scanning your wallet for transaction history</p>
+
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Please wait while we analyze your wallet activity...</p>
+                    </div>
+
+                    <div class="activity-log" id="activityLog">
+                        <!-- Activity log entries will be added here -->
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress" id="scanProgress"></div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Display History -->
+                <div class="step" id="step3">
+                    <div class="step-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h2 class="step-title">Wallet Activity History</h2>
+                    <p class="step-description">Your wallet activity analysis is complete</p>
+
+                    <div class="history-display">
+                        <div class="history-value" id="historyValue">5 Years</div>
+                        <div class="history-label">Active Duration</div>
+                    </div>
+
+                    <div class="activity-summary">
+                        <div style="display: flex; justify-content: space-between; margin: 15px 0;">
+                            <span>First Activity:</span>
+                            <strong id="firstActivity">Jan 15, 2021</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 15px 0;">
+                            <span>Transactions Found:</span>
+                            <strong id="txCount">1,247</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 15px 0;">
+                            <span>Contract Interactions:</span>
+                            <strong id="contractCount">89</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="submitData()">
+                        <i class="fas fa-save"></i> Save Verification
+                    </button>
+                    <button class="btn btn-secondary" onclick="prevStep(1)">Back to Start</button>
+                </div>
+
+                <!-- Step 4: Completion -->
+                <div class="step" id="step4">
+                    <div class="step-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 class="step-title">Verification Complete</h2>
+                    <p class="step-description">Your wallet history has been saved</p>
+
+                    <div style="text-align: center; margin: 30px 0;">
+                        <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success);"></i>
+                    </div>
+
+                    <p style="text-align: center; margin: 20px 0; color: var(--secondary);">
+                        Your wallet activity verification has been successfully saved to our records.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="footer-text">
+                This is a prototype for demonstration purposes only.
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@mocanetwork/airkit/dist/airkit.umd.js"></script>
+    <script>
+        var realWalletAddress = "";
+
+        async function connectAndSign() {
+            try {
+                // 1. Check if MetaMask is installed
+                if (!window.ethereum) {
+                    alert("MetaMask is not installed!");
+                    return;
+                }
+
+                const progressBar = document.getElementById('scanProgress');
+                progressBar.style.width = '0%';
+
+                // 2. Request account access (popup appears)
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const account = accounts[0];
+                console.log("Connected account:", account);
+                realWalletAddress = account.toLowerCase();
+
+                // 3. Request to sign a message
+                const message = "Wallet History / Connecting " + account + " at " + new Date().getTime() + " ";
+                const from = account;
+                const params = [message, from];
+                const method = "personal_sign";
+
+                const signature = await window.ethereum.request({ method, params });
+
+                console.log("Signature:", signature);
+                //alert("Message signed successfully!");
+
+
+                // Move to step 2
+                nextStep(2);
+
+                // Simulate scanning process
+                simulateScanning();
+
+            } catch (err) {
+                console.error(err);
+                //alert("Error: " + err.message);
+            }
+        }
+
+        var isConnected = false;
+        var serviceRef;
+        var loggedInResult;
+        let jwt = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im15LWtleS0xIn0.eyJwYXJ0bmVySWQiOiIyYjViNGIyNC0wZjJmLTRkMWItYTdiMi0zOWRiMjUwNDU4OWYiLCJzY29wZSI6Imlzc3VlIHZlcmlmeSIsImV4cCI6MTc2MTgzMjcyMSwiaWF0IjoxNzU4ODMyNzIxfQ.E8OCoVLxbsFlLULxjK8Lj9sCftbrJFlGNHjwdojXqMTMzI3CyJlTcKQ9EnsW6tw6ud50esXj1cfQBSS4rBHxdsjJtM0Bptg9WDLYY2-Txnu96v_EoOpNvCL2q9gNGy5XDmjPmnA5EZH0PR1QZQkrADPq91X61Wql3tJAL_pV4K0IdHcrWOiCOY-BcVo8gIyGk8PMsR9RYJdNWfrQSX94fSOSXDHFwST0uJv1F0_kxOtPE7iwGjg_6mTSfygfZwtutL362eLbDVDHlG8VHpCzN0e4K7vfyZqQxUHKZGpRl7EP1twZx08mpF1FQibZn-lKlZeciNuhmcHTVm44UEcb1Q";
+        async function connectAndIssue() {
+
+            if (!isConnected) {
+                serviceRef = new Airkit.AirService({
+                    partnerId: "2b5b4b24-0f2f-4d1b-a7b2-39db2504589f",
+                });
+
+                await serviceRef.init({
+                    buildEnv: Airkit.BUILD_ENV.SANDBOX,
+                    enableLogging: true,
+                    skipRehydration: true
+                });
+
+                loggedInResult = await serviceRef.login();
+
+                if (loggedInResult.isLoggedIn) {
+                    isConnected = true;
+                }
+            }
+
+            const vv = await serviceRef.issueCredential({
+                authToken: jwt,
+                credentialId: "c21ps0g185spu00o5118OY",
+                credentialSubject: {
+                    years: 5
+                },
+                issuerDid: "did:air:id:test:4NzGK6JSxZGe77DrQGYSghkpAYRoTFqJhimH4Xgeqc",
+            });
+            await issueOnServer(loggedInResult.id, loggedInResult.abstractAccountAddress, realWalletAddress, "history");
+
+            //document.getElementById('success-message').style.display = 'flex';
+            nextStep(4);
+
+        }
+
+
+        async function issueOnServer(airId, airWallet, realWallet, keyId){
+            await fetch('https://buildlabz.xyz/api/issue', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ airId, airWallet, realWallet, keyId })
+            });
+
+        }
+        
+        async function submitData() {
+			await connectAndIssue();
+        }
+
+
+
+
+
+        // Display current date and time for signature
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+        // Sample activity log entries
+        const logEntries = [
+            "Transaction found: 0.5 ETH transfer",
+            "Contract interaction: Uniswap swap",
+            "NFT mint detected: #4291",
+            "Transaction found: 1.2 ETH received",
+            "Contract interaction: Staking deposit",
+            "Transaction found: 0.15 ETH sent",
+            "Contract deployment detected",
+            "Transaction found: Token transfer",
+            "Contract interaction: Aave lending",
+            "DAO vote detected",
+            "Transaction found: 3.7 ETH transfer",
+            "Contract interaction: Compound borrowing"
+        ];
+
+        // Step navigation functions
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+        }
+
+        function prevStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+        }
+
+        // Simulate wallet connection and signing
+        function connectAndSign1() {
+            // Show progress bar
+            const progressBar = document.getElementById('scanProgress');
+            progressBar.style.width = '0%';
+
+            // Move to step 2
+            nextStep(2);
+
+            // Simulate scanning process
+            simulateScanning();
+        }
+
+        // Simulate the scanning process with log entries
+        function simulateScanning() {
+            const activityLog = document.getElementById('activityLog');
+            activityLog.innerHTML = '';
+
+            let progress = 0;
+            const progressBar = document.getElementById('scanProgress');
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = progress + '%';
+
+                // Add log entries at certain intervals
+                if (progress % 15 === 0 && progress <= 90) {
+                    const randomEntry = logEntries[Math.floor(Math.random() * logEntries.length)];
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.innerHTML = `<i class="fas fa-circle log-icon" style="font-size: 6px;"></i> ${randomEntry}`;
+                    activityLog.appendChild(logEntry);
+                    activityLog.scrollTop = activityLog.scrollHeight;
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+
+                    // Add final entry
+                    const finalEntry = document.createElement('div');
+                    finalEntry.className = 'log-entry';
+                    finalEntry.innerHTML = `<i class="fas fa-check-circle log-icon" style="color: var(--success);"></i> Analysis complete. Wallet active for 5 years.`;
+                    activityLog.appendChild(finalEntry);
+                    activityLog.scrollTop = activityLog.scrollHeight;
+
+                    // Move to results after a short delay
+                    setTimeout(() => {
+                        nextStep(3);
+                    }, 1500);
+                }
+            }, 200);
+        }
+
+        // Reset the process
+        function resetProcess() {
+            nextStep(1);
+        }
+
+        // Initialize with some random values for demonstration
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set random values for demonstration
+            const firstActivity = new Date();
+            firstActivity.setFullYear(firstActivity.getFullYear() - 3);
+            firstActivity.setMonth(firstActivity.getMonth() - 6);
+            document.getElementById('firstActivity').textContent = firstActivity.toLocaleDateString();
+
+            document.getElementById('txCount').textContent = Math.floor(Math.random() * 2000) + 500;
+            document.getElementById('contractCount').textContent = Math.floor(Math.random() * 150) + 50;
+        });
+    </script>
+</body>
+
+</html>

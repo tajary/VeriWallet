@@ -36,6 +36,7 @@ export default function Login() {
 
         if (loggedInResult.isLoggedIn) {
             login(loggedInResult.abstractAccountAddress);
+            localStorage.setItem("airId",loggedInResult.id);
         }
         setIsConnecting(false);
     };

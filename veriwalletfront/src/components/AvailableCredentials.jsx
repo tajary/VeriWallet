@@ -21,6 +21,7 @@ export default function AvailableCredentials({ onUpdate }) {
             description: "Verifies the user meets a minimum age requirement (e.g., over 20) for DeFi access.",
             category: "KYC",
             icon: 'UserCheck',
+            url:"/partners/salam.html",
             issuerProgramId: 'c21pn0g100rre0059314VC',
             verifierProgramId: 'c21pp0302fulu0023308U9',
             color: "from-blue-500 to-cyan-500",
@@ -34,6 +35,7 @@ export default function AvailableCredentials({ onUpdate }) {
             description: "Confirms the user’s residency for DeFi protocol compliance.",
             category: "KYC",
             icon: 'GlobeIcon',
+            url:"/partners/salam.html",
             issuerProgramId: 'c21pq0g0zfdti0069516bI',
             verifierProgramId: 'c21pq030zhyq80063308wc',
             color: "from-violet-500 to-fuchsia-500",
@@ -47,6 +49,7 @@ export default function AvailableCredentials({ onUpdate }) {
             description: "Confirms the user holds a minimum crypto asset balance (>1 ETH).",
             category: "Crypto Asset Proof",
             icon: 'BadgeDollarSign',
+            url:"/partners/salam.html",
             issuerProgramId: 'c21pq0g0zoy2p0077903Lf',
             verifierProgramId: 'c21pq030zqiot0073308yH',
             color: "from-purple-500 to-pink-500",
@@ -73,6 +76,7 @@ export default function AvailableCredentials({ onUpdate }) {
             description: "Confirms the user’s active participation in DeFi protocols.",
             category: "DeFi Trust Score",
             icon: 'UserRoundCheck',
+            url:"/partners/wallet-history.html",
             issuerProgramId: '',
             verifierProgramId: '',
             color: "from-purple-500 to-pink-500",
@@ -86,6 +90,7 @@ export default function AvailableCredentials({ onUpdate }) {
             description: "Confirms the user’s history of timely loan repayments in DeFi.",
             category: "DeFi Trust Score",
             icon: 'Wallet',
+            url:"/partners/credichain.html",
             issuerProgramId: '',
             verifierProgramId: '',
             color: "from-purple-500 to-pink-500",
@@ -200,7 +205,9 @@ export default function AvailableCredentials({ onUpdate }) {
     }
 
     return (
-        <section>
+        <>
+        <a name="creds"/>
+        <section className='mt-20 mb-80'>
             <div className="flex items-center gap-3 mb-6">
                 <Store className="w-8 h-8 text-indigo-400" />
                 <h2 className="text-3xl font-bold">Available Credentials</h2>
@@ -231,6 +238,8 @@ export default function AvailableCredentials({ onUpdate }) {
                 ))}
             </div>
         </section>
+
+        </>
     );
 }
 
@@ -255,16 +264,20 @@ function AvailableCredentialCard({ credential, issueCredential, verifyCredential
             </p>
 
             <div className='flex  justify-between items-center'>
-                <button onClick={() => issueCredential(credential)} className="flex bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300  items-center justify-center gap-2 group">
+                {/* <button onClick={() => issueCredential(credential)} className="flex bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300  items-center justify-center gap-2 group">
                     <ClipboardEdit className="w-4 h-4" />
                     Issue Now
                     <span className="group-hover:translate-x-1 transition-transform"></span>
-                </button>
+                </button> 
                 <button onClick={() => verifyCredential(credential)} className="flex bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300  items-center justify-center gap-2 group">
                     <Shield className="w-4 h-4" />
                     Verify Now
                     <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </button>
+                </button> */}
+                <a href={credential.url} target="_blank"
+                 className="flex bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3 rounded-lg w-full font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300  items-center justify-center gap-2 group"
+                >Get Credential</a>
+
             </div>
         </div>
     );

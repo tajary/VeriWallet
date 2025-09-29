@@ -64,7 +64,9 @@ export default function MyCredentials({ updateData }) {
     };
 
     return (
-        <section className="mb-16">
+        <section className="mb-16" style={{
+            display:"none"
+        }}>
             <div className="flex items-center gap-3 mb-6">
                 <IdCard className="w-8 h-8 text-indigo-400" />
                 <h2 className="text-3xl font-bold">My Credentials</h2>

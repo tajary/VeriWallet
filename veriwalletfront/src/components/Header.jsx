@@ -19,6 +19,10 @@ export default function Header() {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               VeriWallet
             </h1>
+
+            <a href="#creds" >Avaiable Credentials</a>
+            <a href="#perks" >Perks & Opportunities</a>
+
           </div>
           
           <div className="flex items-center gap-4">
