@@ -80,3 +80,30 @@ VeriWallet provides **portable, cryptographically signed credentials** linked to
 README.md          -> Project documentation
 
 ```
+
+---
+
+## 🔄 Version 2 – Wave 2 of Moca Hackathon
+
+In this new release, the focus was on **enhancing the UI/UX** and creating a clearer and more rewarding user journey for collecting credentials and unlocking perks.
+
+### ✨ New Features:
+
+* **Top navigation bar** for easier navigation between sections
+* **User progress chart** at the top showing collected vs total credentials
+* **Credential detail view** now displays which perks each credential is used for
+* **Improved Perks section:**
+
+  * Required credentials are clearly listed
+  * Color-coded status for each:
+
+    * 🔴 Red = Not obtained
+    * 🟡 Yellow = Obtained but not yet verified
+    * 🟢 Green = Verified
+  * When all required credentials are green, the perk’s external site becomes accessible
+* **One-click credential claiming** directly from the perks page
+
+This version gives users a smoother and more intuitive experience, helping them understand their progress and reach their rewards more easily.
+
+---
+
