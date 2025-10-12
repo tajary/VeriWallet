@@ -2,43 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 248, 250, 252;
-  --background-start-rgb: 15, 23, 42;
-  --background-end-rgb: 30, 41, 59;
+@layer base {
+  body {
+    @apply bg-dark-950 text-gray-200;
+  }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--background-start-rgb)),
-    rgb(var(--background-end-rgb))
-  );
-  min-height: 100vh;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:from-indigo-600 hover:to-purple-700 hover:transform hover:-translate-y-0.5 hover:shadow-lg;
+  }
+  
+  .card {
+    @apply bg-gradient-to-br from-dark-800 to-dark-900 rounded-xl shadow-lg border border-dark-700 p-6 transition-all duration-300 hover:border-dark-600 hover:transform hover:-translate-y-1 hover:shadow-xl;
+  }
+
+  .category-identity { @apply bg-gradient-to-r from-indigo-500 to-purple-600; }
+  .category-work { @apply bg-gradient-to-r from-pink-500 to-yellow-500; }
+  .category-finance { @apply bg-gradient-to-r from-green-500 to-emerald-600; }
+  .category-social { @apply bg-gradient-to-r from-blue-500 to-blue-700; }
+  .category-development { @apply bg-gradient-to-r from-orange-500 to-red-600; }
+  .category-web3 { @apply bg-gradient-to-r from-purple-500 to-pink-500; }
+  .category-education { @apply bg-gradient-to-r from-cyan-500 to-blue-500; }
+  .category-gaming { @apply bg-gradient-to-r from-lime-500 to-green-600; }
+
+  .category-jobs { @apply bg-gradient-to-r from-indigo-500 to-purple-600; }
+  .category-access { @apply bg-gradient-to-r from-pink-500 to-yellow-500; }
+  .category-airdrops { @apply bg-gradient-to-r from-green-500 to-emerald-600; }
+  .category-grants { @apply bg-gradient-to-r from-blue-500 to-blue-700; }
+  .category-nft { @apply bg-gradient-to-r from-orange-500 to-red-600; }
+  .category-defi { @apply bg-gradient-to-r from-purple-500 to-pink-500; }
+  .category-events { @apply bg-gradient-to-r from-cyan-500 to-blue-500; }
+  .category-trading { @apply bg-gradient-to-r from-lime-500 to-green-600; }
+
+  .glow {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+
+  .progress-glow {
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  }
+
+  .nav-glow {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1e293b;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #475569;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .credential-earned {
+    animation: pulse 0.5s ease-in-out 2;
+  }
 }

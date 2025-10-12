@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
         //if (window.service) {
             const savedUser = localStorage.getItem('veriwallet_user');
             if (savedUser) {
+                console.info("Yes I have the user!", JSON.parse(savedUser));
                 setUser(JSON.parse(savedUser));
             }
             

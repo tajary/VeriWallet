@@ -1,9 +1,18 @@
+import { useState } from 'react';
 import { useAuth } from './contexts/AuthContext';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
+import Navigation from './components/Navigation';
+import Dashboard from './pages/Dashboard';
+import CredentialExplorer from './pages/CredentialExplorer';
+import PerkExplorer from './pages/PerkExplorer';
+import Login from './pages/Login';
 
 function AppContent() {
+  const [currentView, setCurrentView] = useState('dashboard');
+  // const { isAuthenticated } = useAuth();
+
   const { user, loading } = useAuth();
+
+  console.log("In App content: ", user, loading);
 
   if (loading) {
     return (
@@ -16,11 +25,24 @@ function AppContent() {
     );
   }
 
-  return user ? <Dashboard /> : <Login />;
+  if (!user) {
+    return <Login />;
+  }
+
+  return (
+    <div className="min-h-screen bg-dark-950">
+      <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+      <main className="container mx-auto px-4 py-8">
+        {currentView === 'dashboard' && <Dashboard />}
+        {currentView === 'credentials' && <CredentialExplorer />}
+        {currentView === 'perks' && <PerkExplorer />}
+      </main>
+    </div>
+  );
 }
 
-function App() {
-  return <AppContent />;
+function App(){
+  return <AppContent />
 }
 
 export default App;
