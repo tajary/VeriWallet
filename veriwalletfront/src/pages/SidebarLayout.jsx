@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CredentialIssuanceManager from "../components/CredentialIssuanceManager";
+import CredentialPerksManager from '../components/CredentialPerksManager';
 // Home Component with Developer Section
 const HomeComponent = () => {
   const workflowSteps = [
@@ -366,7 +367,14 @@ const ProfileComponent = () => {
 
 // API Component
 const APIComponent = () => {
-  const apiKey = "sk_test_1234567890abcdef";
+
+
+  useEffect(function(){
+    fetch('/mock-data/credential-services.json')
+    .then(response => response.json())
+    .then(data => setApiKey(data.key));
+  },[]);
+  const apiKey = "";
   const endpoints = {
     issuance: "https://api.example.com/v1/issuance",
     usage: "https://api.example.com/v1/usage"
@@ -531,10 +539,10 @@ const SidebarLayout = () => {
 
   const menuItems = [
     { id: 'Home', label: 'Home', icon: '🏠' },
+    { id: 'Profile', label: 'Profile', icon: '👤' },
     { id: 'API', label: 'API', icon: '🔑' },
     { id: 'CredentialIssuance', label: 'Credential Issuance', icon: '📄' },
     { id: 'CredentialUsage', label: 'Credential Usage', icon: '🔍' },
-    { id: 'Profile', label: 'Profile', icon: '👤' }
   ];
 
   const renderContent = () => {
@@ -546,7 +554,7 @@ const SidebarLayout = () => {
       case 'CredentialIssuance':
         return <CredentialIssuanceManager />;
       case 'CredentialUsage':
-        return <CredentialUsage />;
+        return <CredentialPerksManager />;
       case 'Profile':
         return <ProfileComponent />;
       default:

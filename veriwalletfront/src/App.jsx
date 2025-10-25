@@ -36,11 +36,7 @@ function AppContent() {
     <div className="min-h-screen bg-dark-950">
       <Navigation currentView={currentView} setCurrentView={setCurrentView} />
       <main className="container mx-auto px-4 py-8">
-        
-        <SidebarLayout />
-        <CredentialIssuanceManager />
-
-        <CredentialPerksManager />
+        {currentView === 'sidebar' && <SidebarLayout />}
         {currentView === 'dashboard' && <Dashboard />}
         {currentView === 'credentials' && <CredentialExplorer />}
         {currentView === 'perks' && <PerkExplorer />}

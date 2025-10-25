@@ -50,7 +50,8 @@ export default function Navigation({ currentView, setCurrentView }) {
               {[
                 { id: 'dashboard', name: 'Dashboard', icon: '🏠' },
                 { id: 'credentials', name: 'Credentials', icon: '🆔' },
-                { id: 'perks', name: 'Perks', icon: '🎁' }
+                { id: 'perks', name: 'Perks', icon: '🎁' },
+                { id: 'sidebar', name: 'Partnership', icon: '🤝🏻' }
               ].map((item) => (
                 <button
                   key={item.id}
