@@ -5,6 +5,9 @@ import Dashboard from './pages/Dashboard';
 import CredentialExplorer from './pages/CredentialExplorer';
 import PerkExplorer from './pages/PerkExplorer';
 import Login from './pages/Login';
+import CredentialIssuanceManager from './components/CredentialIssuanceManager';
+import CredentialPerksManager from './components/CredentialPerksManager';
+import SidebarLayout from './pages/SidebarLayout';
 
 function AppContent() {
   const [currentView, setCurrentView] = useState('dashboard');
@@ -33,6 +36,11 @@ function AppContent() {
     <div className="min-h-screen bg-dark-950">
       <Navigation currentView={currentView} setCurrentView={setCurrentView} />
       <main className="container mx-auto px-4 py-8">
+        
+        <SidebarLayout />
+        <CredentialIssuanceManager />
+
+        <CredentialPerksManager />
         {currentView === 'dashboard' && <Dashboard />}
         {currentView === 'credentials' && <CredentialExplorer />}
         {currentView === 'perks' && <PerkExplorer />}

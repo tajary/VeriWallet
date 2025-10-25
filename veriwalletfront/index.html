@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VeriWallet - Your Passport to Trusted DeFi</title>
+    <title>VeriWallet - The Universal Passport Infrastructure for Web3</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -258,6 +258,122 @@
             color: var(--gray);
         }
         
+        /* Partner Business Section */
+        .partner-business {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .partner-business::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+            z-index: -1;
+        }
+        
+        .partner-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .partner-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .partner-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        .partner-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .partner-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+        
+        .partner-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--light);
+        }
+        
+        .partner-card p {
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .partner-button {
+            display: inline-block;
+            background: transparent;
+            color: var(--light);
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .partner-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            transition: all 0.3s;
+            z-index: -1;
+        }
+        
+        .partner-button:hover {
+            color: var(--darker);
+        }
+        
+        .partner-button:hover::before {
+            width: 100%;
+        }
+        
         /* Developers Section */
         .developers {
             padding: 100px 0;
@@ -375,6 +491,15 @@
             .step {
                 min-width: 100%;
             }
+            
+            .partner-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .partner-card {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -396,6 +521,7 @@
                     <ul>
                         <li><a href="#how-it-works">How It Works</a></li>
                         <li><a href="#benefits">Benefits</a></li>
+                        <li><a href="#partner-business">Partners</a></li>
                         <li><a href="#developers">For Developers</a></li>
                         <li><a href="app.html" class="cta-button">Get Passport</a></li>
                     </ul>
@@ -407,8 +533,8 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>VeriWallet: Universal Credential Passport</h1>
-            <p>Portable credentials. Instant DeFi access.</p>
+            <h1>VeriWallet: The Universal Passport Infrastructure for Web3</h1>
+            <p>An open API platform that lets projects issue, verify, and connect credentials to real-world perks.</p>
             <a href="app.html" class="cta-button">Get Credential Passport</a>
         </div>
     </section>
@@ -422,15 +548,15 @@
                     <div class="step-icon">
                         <i class="fas fa-wallet"></i>
                     </div>
-                    <h3>Connect Your Wallet & Sign In</h3>
-                    <p>Securely connect your preferred cryptocurrency wallet to begin the verification process.</p>
+                    <h3>Sign In</h3>
+                    <p>Securely sign in using the Moca AirKit.</p>
                 </div>
                 <div class="step">
                     <div class="step-icon">
                         <i class="fas fa-id-card"></i>
                     </div>
-                    <h3>Complete KYC Once</h3>
-                    <p>Go through our streamlined KYC process just one time to get your verifiable credential.</p>
+                    <h3>Get Verifiable Credential</h3>
+                    <p>Go through our streamlined credential issuance process just one time to get your verifiable credential.</p>
                 </div>
                 <div class="step">
                     <div class="step-icon">
@@ -453,7 +579,7 @@
                         <i class="fas fa-bolt"></i>
                     </div>
                     <h3>Faster Onboarding</h3>
-                    <p>Skip repetitive KYC processes and get instant access to DeFi platforms with your pre-verified credential.</p>
+                    <p>Skip repetitive credential issuance and verification processes and get instant access to DeFi platforms with your pre-verified credential.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">
@@ -462,7 +588,7 @@
                     <h3>Regulatory Compliance</h3>
                     <p>Stay compliant with global regulations while enjoying seamless access to decentralized finance.</p>
                 </div>
-                <div class="benefit-card">
+                <div class="benefit-card" style="display:none">
                     <div class="benefit-icon">
                         <i class="fas fa-gem"></i>
                     </div>
@@ -475,6 +601,34 @@
                     </div>
                     <h3>Better Rates</h3>
                     <p>Enjoy improved lending rates and borrowing terms as a verified, trusted participant.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Business Section -->
+    <section class="partner-business" id="partner-business">
+        <div class="container">
+            <h2 class="section-title">Partner With VeriWallet</h2>
+            <p style="font-size: 1.2rem; color: var(--gray); max-width: 800px; margin: 0 auto;">Join our ecosystem of trusted partners to issue or verify credentials seamlessly.</p>
+            
+            <div class="partner-cards">
+                <div class="partner-card">
+                    <div class="partner-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3>Credential Issuers</h3>
+                    <p>For businesses and organizations that need to issue verifiable credentials to their users. Streamline your KYC/AML processes and enhance user experience with our secure credential issuance platform.</p>
+                    <a href="issuers.html" class="partner-button">Become a Credential Issuer</a>
+                </div>
+                
+                <div class="partner-card">
+                    <div class="partner-icon">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <h3>Credential Users</h3>
+                    <p>For DeFi platforms, financial services, and other applications that need to verify user credentials. Integrate our verification API to instantly check credential validity without handling sensitive user data.</p>
+                    <a href="verifiers.html" class="partner-button">Become a Credential User</a>
                 </div>
             </div>
         </div>
