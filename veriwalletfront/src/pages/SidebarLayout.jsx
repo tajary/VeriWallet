@@ -400,7 +400,7 @@ const APIComponent = () => {
   }, []);
   const endpoints = {
     issuance: "https://buildlabz.xyz/api/issue",
-    usage: "https://api.example.com/api/{air-id}/{usage-key-id}"
+    usage: "https://buildlabz.xyz/api/verify/{wallet-address}/{credential-id}"
   };
 
   const copyToClipboard = (text) => {
