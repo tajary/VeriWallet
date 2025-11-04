@@ -20,7 +20,6 @@ const CredentialIssuanceManager = () => {
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // دسته‌بندی‌ها
   const categories = [
     { value: 'identity', label: 'Identity', color: 'blue', icon: '🆔' },
     { value: 'defi', label: 'DeFi', color: 'green', icon: '💰' },
@@ -32,13 +31,11 @@ const CredentialIssuanceManager = () => {
     { value: 'other', label: 'Other', color: 'orange', icon: '🔮' }
   ];
 
-  // وضعیت‌ها
   const statusTypes = [
-    { value: 'draft', label: 'Draft', color: 'yellow' },
-    { value: 'published', label: 'Published', color: 'green' }
+    { value: 'initial-submit', label: 'Initial Submit', color: 'yellow' },
+    // { value: 'published', label: 'Published', color: 'green' }
   ];
 
-  // بارگذاری سرویس‌ها از سرور
   useEffect(() => {
     //fetchServices();
         fetch('/mock-data/credential-services.json')
@@ -96,25 +93,26 @@ const CredentialIssuanceManager = () => {
     });
     
     // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: ''
-      });
-    }
+    // if (errors[name]) {
+    //   setErrors({
+    //     ...errors,
+    //     [name]: ''
+    //   });
+    // }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
-      return;
+      //return;
     }
     
     setLoading(true);
     
     try {
-      const response = await fetch('/api/credential-services', {
+      const airId = localStorage.getItem('airId');
+      const response = await fetch('https://buildlabz.xyz/api/issuance/'+airId, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,12 +126,12 @@ const CredentialIssuanceManager = () => {
           id: '',
           title: '',
           category: 'identity',
-          airkitSchemaId: '',
-          airkitSchemaName: '',
-          airkitSchemaJson: '',
-          airkitIssuanceProgramId: '',
-          airkitIssuerDid: '',
-          issuanceUrl: '',
+          airkit_schema_id: '',
+          airkit_schema_name: '',
+          airkit_schema_json: '',
+          airkit_issuance_program_id: '',
+          airkit_issuer_did: '',
+          issuance_url: '',
           status: 'draft'
         });
         setShowForm(false);
@@ -465,8 +463,8 @@ const CredentialIssuanceManager = () => {
                     <input
                       type="text"
                       id="airkitSchemaId"
-                      name="airkitSchemaId"
-                      value={formData.airkitSchemaId}
+                      name="airkit_schema_id"
+                      value={formData.airkit_schema_id}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.airkitSchemaId ? 'border-red-500' : 'border-gray-600'
@@ -486,8 +484,8 @@ const CredentialIssuanceManager = () => {
                     <input
                       type="text"
                       id="airkitSchemaName"
-                      name="airkitSchemaName"
-                      value={formData.airkitSchemaName}
+                      name="airkit_schema_name"
+                      value={formData.airkit_schema_name}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.airkitSchemaName ? 'border-red-500' : 'border-gray-600'
@@ -507,8 +505,8 @@ const CredentialIssuanceManager = () => {
                     <input
                       type="text"
                       id="airkitIssuanceProgramId"
-                      name="airkitIssuanceProgramId"
-                      value={formData.airkitIssuanceProgramId}
+                      name="airkit_issuance_program_id"
+                      value={formData.airkit_issuance_program_id}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.airkitIssuanceProgramId ? 'border-red-500' : 'border-gray-600'
@@ -528,8 +526,8 @@ const CredentialIssuanceManager = () => {
                     <input
                       type="text"
                       id="airkitIssuerDid"
-                      name="airkitIssuerDid"
-                      value={formData.airkitIssuerDid}
+                      name="airkit_issuer_did"
+                      value={formData.airkit_issuer_did}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.airkitIssuerDid ? 'border-red-500' : 'border-gray-600'
@@ -549,8 +547,8 @@ const CredentialIssuanceManager = () => {
                     <input
                       type="url"
                       id="issuanceUrl"
-                      name="issuanceUrl"
-                      value={formData.issuanceUrl}
+                      name="issuance_url"
+                      value={formData.issuance_url}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.issuanceUrl ? 'border-red-500' : 'border-gray-600'
@@ -569,8 +567,8 @@ const CredentialIssuanceManager = () => {
                     </label>
                     <textarea
                       id="airkitSchemaJson"
-                      name="airkitSchemaJson"
-                      value={formData.airkitSchemaJson}
+                      name="airkit_schema_json"
+                      value={formData.airkit_schema_json}
                       onChange={handleInputChange}
                       rows={8}
                       className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm ${
@@ -731,7 +729,7 @@ const CredentialIssuanceManager = () => {
                   </div>
                   
                   {/* Card Actions */}
-                  <div className="px-6 py-4 bg-gray-600 border-t border-gray-500 flex space-x-3">
+                  {/* <div className="px-6 py-4 bg-gray-600 border-t border-gray-500 flex space-x-3">
                     <button className="flex-1 px-3 py-2 border border-gray-500 rounded-md text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-700 transition-colors duration-200">
                       Edit
                     </button>
@@ -753,7 +751,7 @@ const CredentialIssuanceManager = () => {
                         </button>
                       )}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>

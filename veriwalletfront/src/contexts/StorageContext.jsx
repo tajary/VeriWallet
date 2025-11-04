@@ -34,7 +34,7 @@ export function StorageProvider({ children }) {
         setTimeout(async () => {
             await fetchUserCredentials();
             periodicallyFetchCredentials();
-        }, 5000); // every 5 seconds
+        }, 500000); // every 5 seconds
 
     }
     let airId;
@@ -54,7 +54,7 @@ export function StorageProvider({ children }) {
         setUserVerifiedCredentials([...userVerifiedCredentials, credential]);
         airId = localStorage.getItem('airId');
         try {
-            await fetch('https://buildlabz.xyz/api/verify/' + airId + "/" + credential, {
+            const response = await fetch('https://buildlabz.xyz/api/verify/' + airId + "/" + credential, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: ""

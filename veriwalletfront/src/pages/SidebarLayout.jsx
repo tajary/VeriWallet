@@ -40,7 +40,7 @@ const HomeComponent = () => {
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold text-white">Developer Portal</h1>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-          Welcome to our credential management system. Create, manage, and integrate your digital credentials 
+          Welcome to our credential management system. Create, manage, and integrate your digital credentials
           with our comprehensive API platform.
         </p>
       </div>
@@ -51,7 +51,7 @@ const HomeComponent = () => {
         <p className="text-gray-400 mb-8">
           Our thorough verification process ensures the highest quality and security standards for all credentials in our ecosystem.
         </p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {workflowSteps.map((step) => (
             <div key={step.step} className="bg-gray-750 rounded-lg p-6 border border-gray-600 hover:border-gray-500 transition-colors">
@@ -83,7 +83,7 @@ const HomeComponent = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-500 bg-opacity-20 flex items-center justify-center">
@@ -95,7 +95,7 @@ const HomeComponent = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-purple-500 bg-opacity-20 flex items-center justify-center">
@@ -175,10 +175,33 @@ const ProfileComponent = () => {
     email: ""
   });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    async function load() {
+      const airId = localStorage.getItem('airId');
+      const response = await fetch('https://buildlabz.xyz/api/user/' + airId);
+      const result = await response.json();
+
+      const profileObj = Object.keys(result).reduce((acc, key) => {
+        acc[key] = result[key] ?? '';
+        return acc;
+      }, {});
+      setProfile(profileObj)
+    }
+    load();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const airId = localStorage.getItem('airId');
+    const response = await fetch('https://buildlabz.xyz/api/user/' + airId, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profile)
+    });
+
+    const result = await response.json();
     // Handle profile submission
-    console.log("Profile submitted:", profile);
+    console.log("Profile submitted:", profile, result);
   };
 
   const handleChange = (e) => {
@@ -193,7 +216,7 @@ const ProfileComponent = () => {
       <div className="bg-gray-800 rounded-xl p-8 border border-gray-700">
         <h2 className="text-2xl font-bold text-white mb-2">Developer Profile</h2>
         <p className="text-gray-400 mb-6">
-          Complete your profile information. Our team will use this information to contact you for verification 
+          Complete your profile information. Our team will use this information to contact you for verification
           of your provided services and credentials.
         </p>
 
@@ -204,7 +227,7 @@ const ProfileComponent = () => {
               <h3 className="text-lg font-semibold text-white border-b border-gray-700 pb-2">
                 Personal Information
               </h3>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Full Name *
@@ -241,7 +264,7 @@ const ProfileComponent = () => {
               <h3 className="text-lg font-semibold text-white border-b border-gray-700 pb-2">
                 Organization
               </h3>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Organization Name *
@@ -281,7 +304,7 @@ const ProfileComponent = () => {
             <p className="text-gray-400 text-sm">
               Provide your social media handles for verification and communication purposes.
             </p>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -293,8 +316,8 @@ const ProfileComponent = () => {
                   </span>
                   <input
                     type="text"
-                    name="xUsername"
-                    value={profile.xUsername}
+                    name="x_username"
+                    value={profile.x_username}
                     onChange={handleChange}
                     className="flex-1 bg-gray-700 border border-gray-600 rounded-r-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     placeholder="username"
@@ -312,8 +335,8 @@ const ProfileComponent = () => {
                   </span>
                   <input
                     type="text"
-                    name="telegramUsername"
-                    value={profile.telegramUsername}
+                    name="telegram_username"
+                    value={profile.telegram_username}
                     onChange={handleChange}
                     className="flex-1 bg-gray-700 border border-gray-600 rounded-r-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                     placeholder="username"
@@ -327,8 +350,8 @@ const ProfileComponent = () => {
                 </label>
                 <input
                   type="text"
-                  name="discordUsername"
-                  value={profile.discordUsername}
+                  name="discord_username"
+                  value={profile.discord_username}
                   onChange={handleChange}
                   className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                   placeholder="username#1234"
@@ -340,7 +363,7 @@ const ProfileComponent = () => {
           {/* Verification Notice */}
           <div className="bg-blue-500 bg-opacity-10 border border-blue-500 rounded-lg p-4">
             <p className="text-blue-200 text-sm">
-              🔒 <strong>Verification Process:</strong> Our team will contact you through the provided channels 
+              🔒 <strong>Verification Process:</strong> Our team will contact you through the provided channels
               to verify your identity and services. This is a mandatory step for credential approval.
             </p>
           </div>
@@ -367,30 +390,17 @@ const ProfileComponent = () => {
 
 // API Component
 const APIComponent = () => {
+  const [apiKey, setApiKey] = useState("");
 
-
-  useEffect(function(){
-    fetch('/mock-data/credential-services.json')
-    .then(response => response.json())
-    .then(data => setApiKey(data.key));
-  },[]);
-  const apiKey = "";
+  useEffect(function () {
+    const airId = localStorage.getItem('airId');
+    fetch('https://buildlabz.xyz/api/user_key/' + airId)
+      .then(response => response.text())
+      .then(data => setApiKey(data));
+  }, []);
   const endpoints = {
-    issuance: "https://api.example.com/v1/issuance",
-    usage: "https://api.example.com/v1/usage"
-  };
-
-  const credentialsData = {
-    issuance: [
-      { id: 1, key: "iss_key_1", description: "Main issuance key" },
-      { id: 2, key: "iss_key_2", description: "Test key for development" },
-      { id: 3, key: "iss_key_3", description: "Backup issuance key" }
-    ],
-    usage: [
-      { id: 1, key: "use_key_1", description: "Public access key" },
-      { id: 2, key: "use_key_2", description: "Private access key" },
-      { id: 3, key: "use_key_3", description: "Limited scope key" }
-    ]
+    issuance: "https://buildlabz.xyz/api/issue",
+    usage: "https://api.example.com/api/{air-id}/{usage-key-id}"
   };
 
   const copyToClipboard = (text) => {
@@ -412,7 +422,7 @@ const APIComponent = () => {
               <code className="flex-1 bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono border border-gray-700">
                 {apiKey}
               </code>
-              <button 
+              <button
                 onClick={() => copyToClipboard(apiKey)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg text-sm transition-colors duration-200"
               >
@@ -456,76 +466,57 @@ const APIComponent = () => {
         {/* Issuance Credentials */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-white">Issuance Credentials</h3>
-            <span className="bg-gray-700 text-gray-300 text-sm px-3 py-1 rounded-full">
-              {credentialsData.issuance.length} keys
-            </span>
+            <h3 className="text-xl font-bold text-white">Issuance Example</h3>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full divide-y divide-gray-700">
-              <thead>
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Key
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Description
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-700">
-                {credentialsData.issuance.map((cred) => (
-                  <tr key={cred.id} className="hover:bg-gray-750 transition-colors">
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <code className="text-sm text-gray-300 font-mono bg-gray-900 px-2 py-1 rounded">
-                        {cred.key}
-                      </code>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-300">
-                      {cred.description}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="">
+            <pre className="text-sm text-gray-300 font-mono bg-gray-900 px-2 py-1 rounded">
+              <code >
+                {`async function issueOnServer(
+              airId, 
+              airWallet, 
+              realWallet, 
+              keyId){
+  await fetch('https://buildlabz.xyz/api/issue', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+        airId, 
+        airWallet, 
+        realWallet, 
+        keyId, 
+        key })
+  });
+}`}
+              </code>
+            </pre>
           </div>
         </div>
 
         {/* Usage Credentials */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-white">Usage Credentials</h3>
-            <span className="bg-gray-700 text-gray-300 text-sm px-3 py-1 rounded-full">
-              {credentialsData.usage.length} keys
-            </span>
+            <h3 className="text-xl font-bold text-white">Usage Example</h3>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full divide-y divide-gray-700">
-              <thead>
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Key
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Description
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-700">
-                {credentialsData.usage.map((cred) => (
-                  <tr key={cred.id} className="hover:bg-gray-750 transition-colors">
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <code className="text-sm text-gray-300 font-mono bg-gray-900 px-2 py-1 rounded">
-                        {cred.key}
-                      </code>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-300">
-                      {cred.description}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="">
+            <pre className="text-sm text-gray-300 font-mono bg-gray-900 px-2 py-1 rounded">
+              <code >
+                {`
+var response = await fetch(
+    'https://buildlabz.xyz/api/verify/' + 
+    realWalletAddress + 
+    "/resume"
+    );
+    var dataObj = await response.json();
+    if (dataObj.status == "ok") {
+        // user is verified
+    } else {
+      // user is not verified
+    }
+                `}
+              </code>
+            </pre>
+
+
           </div>
         </div>
       </div>
@@ -576,11 +567,10 @@ const SidebarLayout = () => {
               <li key={item.id}>
                 <button
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                    activeTab === item.id
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${activeTab === item.id
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    }`}
                 >
                   <span className="text-lg">{item.icon}</span>
                   <span className="font-medium">{item.label}</span>

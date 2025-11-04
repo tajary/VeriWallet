@@ -10,21 +10,20 @@ const CredentialPerksManager = () => {
     category: 'defi',
     url: '',
     status: 'draft',
-    credentialRequirements: [
+    credential_requirements: [
       {
         credentialId: '',
         conditions: [],
         operator: 'AND'
       }
     ],
-    globalOperator: 'AND'
+    global_operator: 'AND'
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // دسته‌بندی‌های perk
   const perkCategories = [
     { value: 'defi', label: 'DeFi', color: 'green', icon: '💰' },
     { value: 'work', label: 'Employment', color: 'blue', icon: '💼' },
@@ -36,14 +35,12 @@ const CredentialPerksManager = () => {
     { value: 'other', label: 'Other', color: 'indigo', icon: '🔮' }
   ];
 
-  // وضعیت‌ها
   const statusTypes = [
-    { value: 'draft', label: 'Draft', color: 'yellow' },
-    { value: 'published', label: 'Published', color: 'green' },
-    { value: 'archived', label: 'Archived', color: 'gray' }
+    { value: 'under_review', label: 'Under Review', color: 'yellow' },
+    // { value: 'published', label: 'Published', color: 'green' },
+    // { value: 'archived', label: 'Archived', color: 'gray' }
   ];
 
-  // انواع شرط‌ها
   const conditionTypes = {
     string: [
       { value: 'equals', label: 'Equals' },
@@ -67,23 +64,22 @@ const CredentialPerksManager = () => {
     ]
   };
 
-  // بارگذاری داده‌ها
   useEffect(() => {
     // fetchPerks();
     // fetchCredentials();
-          Promise.all([
-    fetch('/mock-data/credential-perks.json').then(r => r.json()),
-    fetch('/mock-data/credential-services.json').then(r => r.json())
-  ]).then(([perksData, credentialsData]) => {
-    setPerks(perksData.perks);
-    setAvailableCredentials(credentialsData.credentialServices);
-  });
+    Promise.all([
+      fetch('/mock-data/credential-perks.json').then(r => r.json()),
+      fetch('/mock-data/credential-services.json').then(r => r.json())
+    ]).then(([perksData, credentialsData]) => {
+      setPerks(perksData.perks);
+      setAvailableCredentials(credentialsData.credentialServices);
+    });
   }, []);
 
   const fetchPerks = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/perks');
+      const response = await fetch('/mock-data/credential-perks.json');
       if (response.ok) {
         const data = await response.json();
         setPerks(data);
@@ -110,7 +106,7 @@ const CredentialPerksManager = () => {
   const getCredentialProperties = (credentialId) => {
     const credential = availableCredentials.find(c => c.id === credentialId);
     if (!credential) return [];
-    
+
     try {
       const schema = JSON.parse(credential.airkit_schema_json);
       if (schema.properties?.credentialSubject?.properties) {
@@ -132,7 +128,7 @@ const CredentialPerksManager = () => {
       ...formData,
       [name]: value
     });
-    
+
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -144,8 +140,8 @@ const CredentialPerksManager = () => {
   const addCredentialRequirement = () => {
     setFormData({
       ...formData,
-      credentialRequirements: [
-        ...formData.credentialRequirements,
+      credential_requirements: [
+        ...formData.credential_requirements,
         {
           credentialId: '',
           conditions: [],
@@ -156,15 +152,15 @@ const CredentialPerksManager = () => {
   };
 
   const removeCredentialRequirement = (index) => {
-    const newRequirements = formData.credentialRequirements.filter((_, i) => i !== index);
+    const newRequirements = formData.credential_requirements.filter((_, i) => i !== index);
     setFormData({
       ...formData,
-      credentialRequirements: newRequirements
+      credential_requirements: newRequirements
     });
   };
 
   const handleCredentialChange = (index, credentialId) => {
-    const newRequirements = [...formData.credentialRequirements];
+    const newRequirements = [...formData.credential_requirements];
     newRequirements[index] = {
       ...newRequirements[index],
       credentialId,
@@ -172,14 +168,14 @@ const CredentialPerksManager = () => {
     };
     setFormData({
       ...formData,
-      credentialRequirements: newRequirements
+      credential_requirements: newRequirements
     });
   };
 
   const addCondition = (credentialIndex) => {
-    const newRequirements = [...formData.credentialRequirements];
+    const newRequirements = [...formData.credential_requirements];
     const properties = getCredentialProperties(newRequirements[credentialIndex].credentialId);
-    
+
     if (properties.length > 0) {
       newRequirements[credentialIndex].conditions.push({
         property: properties[0].key,
@@ -187,49 +183,49 @@ const CredentialPerksManager = () => {
         value: '',
         value2: ''
       });
-      
+
       setFormData({
         ...formData,
-        credentialRequirements: newRequirements
+        credential_requirements: newRequirements
       });
     }
   };
 
   const removeCondition = (credentialIndex, conditionIndex) => {
-    const newRequirements = [...formData.credentialRequirements];
+    const newRequirements = [...formData.credential_requirements];
     newRequirements[credentialIndex].conditions = newRequirements[credentialIndex].conditions.filter((_, i) => i !== conditionIndex);
     setFormData({
       ...formData,
-      credentialRequirements: newRequirements
+      credential_requirements: newRequirements
     });
   };
 
   const handleConditionChange = (credentialIndex, conditionIndex, field, value) => {
-    const newRequirements = [...formData.credentialRequirements];
+    const newRequirements = [...formData.credential_requirements];
     newRequirements[credentialIndex].conditions[conditionIndex][field] = value;
     setFormData({
       ...formData,
-      credentialRequirements: newRequirements
+      credential_requirements: newRequirements
     });
   };
 
   const handleCredentialOperatorChange = (index, operator) => {
-    const newRequirements = [...formData.credentialRequirements];
+    const newRequirements = [...formData.credential_requirements];
     newRequirements[index].operator = operator;
     setFormData({
       ...formData,
-      credentialRequirements: newRequirements
+      credential_requirements: newRequirements
     });
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.id.trim()) newErrors.id = 'Perk ID is required';
     if (!formData.title.trim()) newErrors.title = 'Title is required';
     if (!formData.url.trim()) newErrors.url = 'URL is required';
-    
-    formData.credentialRequirements.forEach((req, index) => {
+
+    formData.credential_requirements.forEach((req, index) => {
       if (!req.credentialId) {
         newErrors[`credential_${index}`] = 'Credential selection is required';
       }
@@ -237,29 +233,30 @@ const CredentialPerksManager = () => {
         newErrors[`conditions_${index}`] = 'At least one condition is required';
       }
     });
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setLoading(true);
-    
+
     try {
-      const response = await fetch('/api/perks', {
+      const airId = localStorage.getItem('airId');
+      const response = await fetch('https://buildlabz.xyz/api/usage/' + airId, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData)
       });
-      
+
       if (response.ok) {
         setFormData({
           id: '',
@@ -267,18 +264,18 @@ const CredentialPerksManager = () => {
           category: 'defi',
           url: '',
           status: 'draft',
-          credentialRequirements: [
+          credential_requirements: [
             {
               credentialId: '',
               conditions: [],
               operator: 'AND'
             }
           ],
-          globalOperator: 'AND'
+          global_operator: 'AND'
         });
         setShowForm(false);
         setErrors({});
-        fetchPerks();
+        //fetchPerks();
       } else {
         console.error('Failed to save perk');
       }
@@ -298,7 +295,7 @@ const CredentialPerksManager = () => {
         },
         body: JSON.stringify({ status: newStatus })
       });
-      
+
       if (response.ok) {
         fetchPerks();
       } else {
@@ -326,12 +323,15 @@ const CredentialPerksManager = () => {
     });
     return stats;
   };
-
-  const filteredPerks = perks.filter(perk => {
-    const categoryMatch = filterCategory === 'all' || perk.category === filterCategory;
-    const statusMatch = filterStatus === 'all' || perk.status === filterStatus;
-    return categoryMatch && statusMatch;
-  });
+  console.log("Perks", perks);
+  let filteredPerks = []
+  if (perks) {
+    filteredPerks = perks.filter(perk => {
+      const categoryMatch = filterCategory === 'all' || perk.category === filterCategory;
+      const statusMatch = filterStatus === 'all' || perk.status === filterStatus;
+      return categoryMatch && statusMatch;
+    });
+  }
 
   const categoryStats = perkCategories.map(cat => ({
     ...cat,
@@ -365,7 +365,7 @@ const CredentialPerksManager = () => {
                 </svg>
                 Add New Perk
               </button>
-              
+
               {/* Filters */}
               <div className="flex flex-col sm:flex-row gap-4">
                 {/* Category Filter */}
@@ -403,7 +403,7 @@ const CredentialPerksManager = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Stats */}
             <div className="flex items-center space-x-6 text-sm text-gray-400">
               <div className="text-center">
@@ -431,9 +431,8 @@ const CredentialPerksManager = () => {
                   {categoryStats.map(category => (
                     <div
                       key={category.value}
-                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg bg-${category.color}-900 bg-opacity-50 border border-${category.color}-700 cursor-pointer transition-all duration-200 hover:bg-opacity-70 ${
-                        filterCategory === category.value ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-500' : ''
-                      }`}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg bg-${category.color}-900 bg-opacity-50 border border-${category.color}-700 cursor-pointer transition-all duration-200 hover:bg-opacity-70 ${filterCategory === category.value ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-500' : ''
+                        }`}
                       onClick={() => setFilterCategory(category.value)}
                     >
                       <span className="text-sm">{category.icon}</span>
@@ -455,9 +454,8 @@ const CredentialPerksManager = () => {
                   {statusTypes.map(status => (
                     <div
                       key={status.value}
-                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg bg-${status.color}-900 bg-opacity-50 border border-${status.color}-700 cursor-pointer transition-all duration-200 hover:bg-opacity-70 ${
-                        filterStatus === status.value ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-500' : ''
-                      }`}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg bg-${status.color}-900 bg-opacity-50 border border-${status.color}-700 cursor-pointer transition-all duration-200 hover:bg-opacity-70 ${filterStatus === status.value ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-blue-500' : ''
+                        }`}
                       onClick={() => setFilterStatus(status.value)}
                     >
                       <span className={`text-sm font-medium text-${status.color}-300`}>
@@ -492,7 +490,7 @@ const CredentialPerksManager = () => {
                   </svg>
                 </button>
               </div>
-              
+
               <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
                 {/* Basic Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -506,9 +504,8 @@ const CredentialPerksManager = () => {
                       name="id"
                       value={formData.id}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.id ? 'border-red-500' : 'border-gray-600'
-                      }`}
+                      className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.id ? 'border-red-500' : 'border-gray-600'
+                        }`}
                       placeholder="unique-perk-id"
                     />
                     {errors.id && <p className="mt-1 text-sm text-red-400">{errors.id}</p>}
@@ -524,9 +521,8 @@ const CredentialPerksManager = () => {
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.title ? 'border-red-500' : 'border-gray-600'
-                      }`}
+                      className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.title ? 'border-red-500' : 'border-gray-600'
+                        }`}
                       placeholder="e.g., Senior Solidity Developer Position"
                     />
                     {errors.title && <p className="mt-1 text-sm text-red-400">{errors.title}</p>}
@@ -580,9 +576,8 @@ const CredentialPerksManager = () => {
                       name="url"
                       value={formData.url}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.url ? 'border-red-500' : 'border-gray-600'
-                      }`}
+                      className={`w-full px-3 py-2 bg-gray-700 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.url ? 'border-red-500' : 'border-gray-600'
+                        }`}
                       placeholder="https://example.com/perk"
                     />
                     {errors.url && <p className="mt-1 text-sm text-red-400">{errors.url}</p>}
@@ -605,13 +600,13 @@ const CredentialPerksManager = () => {
                     </button>
                   </div>
 
-                  {formData.credentialRequirements.map((requirement, credIndex) => (
+                  {formData.credential_requirements.map((requirement, credIndex) => (
                     <div key={credIndex} className="bg-gray-700 rounded-lg p-6 mb-4 border border-gray-600">
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="text-md font-medium text-white">
                           Credential Requirement #{credIndex + 1}
                         </h4>
-                        {formData.credentialRequirements.length > 1 && (
+                        {formData.credential_requirements.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeCredentialRequirement(credIndex)}
@@ -632,9 +627,8 @@ const CredentialPerksManager = () => {
                         <select
                           value={requirement.credentialId}
                           onChange={(e) => handleCredentialChange(credIndex, e.target.value)}
-                          className={`w-full px-3 py-2 bg-gray-600 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                            errors[`credential_${credIndex}`] ? 'border-red-500' : 'border-gray-500'
-                          }`}
+                          className={`w-full px-3 py-2 bg-gray-600 border rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors[`credential_${credIndex}`] ? 'border-red-500' : 'border-gray-500'
+                            }`}
                         >
                           <option value="" className="bg-gray-700">Choose a credential...</option>
                           {availableCredentials.map(cred => (
@@ -767,12 +761,12 @@ const CredentialPerksManager = () => {
                   ))}
 
                   {/* Global Operator */}
-                  {formData.credentialRequirements.length > 1 && (
+                  {formData.credential_requirements.length > 1 && (
                     <div className="flex items-center space-x-2 mb-4">
                       <span className="text-sm text-gray-400">Combine credentials with:</span>
                       <select
-                        value={formData.globalOperator}
-                        onChange={(e) => setFormData({...formData, globalOperator: e.target.value})}
+                        value={formData.global_operator}
+                        onChange={(e) => setFormData({ ...formData, global_operator: e.target.value })}
                         className="px-3 py-1 bg-gray-600 border border-gray-500 rounded text-sm text-white"
                       >
                         <option value="AND">AND (All credentials required)</option>
@@ -828,13 +822,13 @@ const CredentialPerksManager = () => {
             <div className="text-center py-12">
               <div className="text-6xl mb-4 text-gray-600">🎁</div>
               <h3 className="text-lg font-medium text-white mb-2">
-                {filterCategory === 'all' && filterStatus === 'all' 
-                  ? 'No perks found' 
+                {filterCategory === 'all' && filterStatus === 'all'
+                  ? 'No perks found'
                   : 'No perks found with selected filters'}
               </h3>
               <p className="text-gray-400 mb-6">
-                {filterCategory === 'all' && filterStatus === 'all' 
-                  ? 'Get started by creating your first perk with credential requirements.' 
+                {filterCategory === 'all' && filterStatus === 'all'
+                  ? 'Get started by creating your first perk with credential requirements.'
                   : 'Try changing your filters or create a new perk.'}
               </p>
               <button
@@ -883,7 +877,7 @@ const CredentialPerksManager = () => {
                   <div className="p-6">
                     <h4 className="text-sm font-medium text-white mb-3">Credential Requirements</h4>
                     <div className="space-y-3">
-                      {perk.credentialRequirements?.map((req, index) => {
+                      {perk.credential_requirements?.map((req, index) => {
                         const credential = availableCredentials.find(c => c.id === req.credentialId);
                         return (
                           <div key={index} className="bg-gray-600 rounded-lg p-3">
@@ -908,17 +902,17 @@ const CredentialPerksManager = () => {
                       })}
                     </div>
 
-                    {perk.credentialRequirements?.length > 1 && (
+                    {perk.credential_requirements?.length > 1 && (
                       <div className="mt-3 text-center">
                         <span className="text-xs text-gray-400 bg-gray-600 px-2 py-1 rounded">
-                          Global: {perk.globalOperator}
+                          Global: {perk.global_operator}
                         </span>
                       </div>
                     )}
                   </div>
 
                   {/* Card Actions */}
-                  <div className="px-6 py-4 bg-gray-600 border-t border-gray-500 flex space-x-3">
+                  {/* <div className="px-6 py-4 bg-gray-600 border-t border-gray-500 flex space-x-3">
                     <button className="flex-1 px-3 py-2 border border-gray-500 rounded-md text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 transition-colors duration-200">
                       Edit
                     </button>
@@ -940,7 +934,7 @@ const CredentialPerksManager = () => {
                         </button>
                       )}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>
